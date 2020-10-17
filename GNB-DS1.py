@@ -4,22 +4,16 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_recall_fscore_support
 import csv
 
-data_train = pd.read_csv("Assig1-Dataset/train_1.csv");
-data_test = pd.read_csv("Assig1-Dataset/test_with_label_1.csv")
-data_valid = pd.read_csv("Assig1-Dataset/val_1.csv")
+data_train = pd.read_csv('Assig1-Dataset/train_1.csv')
+data_test = pd.read_csv('Assig1-Dataset/test_with_label_1.csv')
+data_valid = pd.read_csv('Assig1-Dataset/val_1.csv')
 
-train = data_train.copy()
-test = data_test.copy()
-valid = data_valid.copy()
-
-train_features = train.loc[:, '1':'1.827']
-train_target = train['1.828']
-
-test_features = test.loc[:, '1':'1.849']
-test_target = test['4']
-
-valid_features = valid.loc[:, '1':'1.842']
-valid_target = valid['1.843']
+train_features = data_train.iloc[:, :-1]
+train_target = data_train.iloc[:, -1]
+test_features = data_test.iloc[:, :-1]
+test_target = data_test.iloc[:, -1]
+valid_features = data_valid.iloc[:, :-1]
+valid_target = data_valid.iloc[:, -1]
 
 classifier = GaussianNB()
 classifier.fit(train_features, train_target)
