@@ -42,16 +42,22 @@ test_accuracy = accuracy_score(testing_set_target, test_prediction)
 # Write results and metrics to file
 file = open(output_results_file_path, 'w', encoding='utf8')
 writer = csv.writer(file, quotechar='"', quoting=csv.QUOTE_ALL, lineterminator='\n')
-count = 0
+count = 1
 for x in test_prediction:
     writer.writerow([count, x])
     count += 1
 writer.writerow("")
 writer.writerow("")
 writer.writerow(["Confusion Matrix"])
-writer.writerow(letters)
+letter_header = letters.copy()
+letter_header.insert(0, ' ')
+writer.writerow(letter_header)
+letter_index = 0
 for x in range(len(letters)):
-    writer.writerow(test_confusion[x])
+    line = test_confusion[x].tolist()
+    line.insert(0, letters[letter_index])
+    writer.writerow(line)
+    letter_index += 1
 writer.writerow("")
 writer.writerow("")
 writer.writerow(["Precision"])
