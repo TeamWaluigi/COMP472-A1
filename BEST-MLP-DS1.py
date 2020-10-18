@@ -1,6 +1,6 @@
 import pandas as pd
+from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_recall_fscore_support
 import csv
 
@@ -15,13 +15,11 @@ test_target = data_test.iloc[:, -1]
 valid_features = data_valid.iloc[:, :-1]
 valid_target = data_valid.iloc[:, -1]
 
-classifier = DecisionTreeClassifier()
+classifier = MLPClassifier()
 param_grid = {
-    'criterion': ['gini', 'entropy'],
-    'max_depth': [10, None],
-    'min_samples_split': [*range(2, 4, 1)],
-    'min_impurity_decrease': [*range(0, 4, 1)],
-    'class_weight': [None, 'balanced'],
+    'activation': ['logistic', 'tanh', 'relu', 'identity'],
+    'hidden_layer_sizes': [(20, 20), (10, 10, 10, 10)],
+    'solver': ['adam', 'sgd']
 }
 clf = GridSearchCV(classifier, param_grid, verbose=2, n_jobs=-1)
 clf.fit(train_features, train_target)
@@ -34,7 +32,7 @@ p2, r2, f2, _ = precision_recall_fscore_support(valid_target, valid_prediction, 
 p3, r3, f3, _ = precision_recall_fscore_support(valid_target, valid_prediction, average='macro')
 valid_accuracy = accuracy_score(valid_target, valid_prediction)
 
-file = open('Output/Best-DT-DS1.csv', 'w', encoding='utf8')
+file = open("Output/Best-MLP-DS1.csv", 'w', encoding='utf8')
 writer = csv.writer(file, quotechar='"', quoting=csv.QUOTE_ALL, lineterminator='\n')
 count = 0
 for x in valid_prediction:

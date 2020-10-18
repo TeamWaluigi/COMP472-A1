@@ -1,11 +1,8 @@
-import os
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_recall_fscore_support
-import math
 import csv
 
-# TODO I made these dynamic, but the BASE-DT and BEST-DT results have changed slightly! Check into this later
 data_train = pd.read_csv('Assig1-Dataset/train_2.csv')
 data_test = pd.read_csv('Assig1-Dataset/test_with_label_2.csv')
 data_valid = pd.read_csv('Assig1-Dataset/val_2.csv')
@@ -22,16 +19,12 @@ valid_target = data_valid.iloc[:, -1]
 classifier = DecisionTreeClassifier(criterion='entropy')
 classifier.fit(train_features, train_target)
 
-test_prediction = classifier.predict(test_features)
-# print(accuracy_score(test_prediction, test_target) * 100)
-
-
 valid_prediction = classifier.predict(valid_features)
 
 valid_confusion = confusion_matrix(valid_target, valid_prediction)
-p1, r1, f1, s = precision_recall_fscore_support(valid_target, valid_prediction)
-p2, r2, f2, s = precision_recall_fscore_support(valid_target, valid_prediction, average='weighted')
-p3, r3, f3, s = precision_recall_fscore_support(valid_target, valid_prediction, average='macro')
+p1, r1, f1, _ = precision_recall_fscore_support(valid_target, valid_prediction)
+p2, r2, f2, _ = precision_recall_fscore_support(valid_target, valid_prediction, average='weighted')
+p3, r3, f3, _ = precision_recall_fscore_support(valid_target, valid_prediction, average='macro')
 valid_accuracy = accuracy_score(valid_target, valid_prediction)
 
 file = open('Output/Base-DT-DS2.csv', 'w', encoding='utf8')

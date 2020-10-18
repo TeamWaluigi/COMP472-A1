@@ -1,11 +1,9 @@
-import os
 import pandas as pd
+from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_recall_fscore_support
-import math
 import csv
 
-# TODO I made these dynamic, but the BASE-DT and BEST-DT results have changed slightly! Check into this later
 data_train = pd.read_csv('Assig1-Dataset/train_2.csv')
 data_test = pd.read_csv('Assig1-Dataset/test_with_label_2.csv')
 data_valid = pd.read_csv('Assig1-Dataset/val_2.csv')
@@ -19,26 +17,24 @@ test_target = data_test.iloc[:, -1]
 valid_features = data_valid.iloc[:, :-1]
 valid_target = data_valid.iloc[:, -1]
 
-classifier = DecisionTreeClassifier(criterion='gini', max_depth=None, min_samples_split=2, min_impurity_decrease=0, class_weight='balanced')
-classifier.fit(train_features, train_target)
+classifier = DecisionTreeClassifier()
+param_grid = {
+    'criterion': ['gini', 'entropy'],
+    'max_depth': [10, None],
+    'min_samples_split': [*range(2, 4, 1)],
+    'min_impurity_decrease': [*range(0, 4, 1)],
+    'class_weight': [None, 'balanced'],
+}
+clf = GridSearchCV(classifier, param_grid, verbose=2, n_jobs=-1)
+clf.fit(train_features, train_target)
 
-test_prediction = classifier.predict(test_features)
-# print(accuracy_score(test_prediction, test_target) * 100)
-
-
-valid_prediction = classifier.predict(valid_features)
+valid_prediction = clf.predict(valid_features)
 
 valid_confusion = confusion_matrix(valid_target, valid_prediction)
-p1, r1, f1, s = precision_recall_fscore_support(valid_target, valid_prediction)
-p2, r2, f2, s = precision_recall_fscore_support(valid_target, valid_prediction, average='weighted')
-p3, r3, f3, s = precision_recall_fscore_support(valid_target, valid_prediction, average='macro')
+p1, r1, f1, _ = precision_recall_fscore_support(valid_target, valid_prediction)
+p2, r2, f2, _ = precision_recall_fscore_support(valid_target, valid_prediction, average='weighted')
+p3, r3, f3, _ = precision_recall_fscore_support(valid_target, valid_prediction, average='macro')
 valid_accuracy = accuracy_score(valid_target, valid_prediction)
-
-print(valid_accuracy)
-print(p1)
-print(r1)
-print(f1)
-
 
 file = open('Output/Best-DT-DS2.csv', 'w', encoding='utf8')
 writer = csv.writer(file, quotechar='"', quoting=csv.QUOTE_ALL, lineterminator='\n')
@@ -68,5 +64,10 @@ writer.writerow("")
 writer.writerow(['Accuracy', valid_accuracy])
 writer.writerow(['F1-Macro', f3])
 writer.writerow(['F1-Weighted', f2])
+writer.writerow("")
+writer.writerow(['Param grid tested:'])
+writer.writerow([param_grid])
+writer.writerow(['Chosen best params:'])
+writer.writerow([clf.best_params_])
 
 
