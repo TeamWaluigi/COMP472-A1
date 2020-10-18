@@ -17,9 +17,3 @@ print_distribution('Assig1-Dataset/train_1.csv', 'Training Data Set 1')
 print_distribution('Assig1-Dataset/train_2.csv', 'Training Data Set 2')
 print_distribution('Assig1-Dataset/val_1.csv', 'Validation Data Set 1')
 print_distribution('Assig1-Dataset/val_2.csv', 'Validation Test Data Set 2')
-
-
-
-
-
-
