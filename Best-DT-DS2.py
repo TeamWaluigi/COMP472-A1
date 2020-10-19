@@ -17,7 +17,7 @@ data_test = pd.read_csv('Assig1-Dataset/test_with_label_2.csv')
 data_valid.columns = data_train.columns
 gridsearch_training_set = pd.concat([data_train, data_valid], ignore_index=True, axis=0)
 testing_set = data_test
-ps = PredefinedSplit([-1 if x in data_train.index else 0 for x in gridsearch_training_set.index])
+ps = PredefinedSplit([-1 if entry in data_train.index else 0 for entry in gridsearch_training_set.index])
 
 # Define the features and target sets
 gridsearch_training_set_features = gridsearch_training_set.iloc[:, :-1]
@@ -62,7 +62,7 @@ writer.writerow("")
 writer.writerow("")
 writer.writerow(["Confusion Matrix"])
 letter_header = letters.copy()
-letter_header.insert(0, ' ')
+letter_header.insert(0, 'Act\Pre')
 writer.writerow(letter_header)
 letter_index = 0
 for x in range(len(letters)):
